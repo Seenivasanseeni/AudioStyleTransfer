@@ -7,9 +7,6 @@ import spectrogram
 
 class TestInit(unittest.TestCase):
     '''To test the initializing of the project'''
-    def setUp(self):
-        if os.path.exists("Data"):
-            os.removedirs('Data')
 
     def test_dirstructure(self):
         '''check whether the dir is as per the template'''
@@ -23,6 +20,7 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/Spectrogram/TTS")
         assert os.path.exists("Data/Spectrogram/HumanAudio")
 
+    @unittest.skip("Not Implemented")
     def test_transfer(self):
         '''Check the copying works'''
 
@@ -33,7 +31,7 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac") #first file
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0089.flac") #second file
 
-
+    @unittest.skip("Not Implemented")
     def test_convert_wav_all(self):
         '''Convert all the files in HumanAudioFlac/*.flac into HumanAudio/*.wav '''
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac")
@@ -42,6 +40,7 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")
         assert os.path.exists("Data/HumanAudio/3081-166546-0089.wav")
 
+    @unittest.skip("Not Implemented")
     def test_make_tts(self):
         '''test the generation of tts wav files'''
         assert os.path.exists("Data/text/3081-166546.trans.txt")
@@ -49,6 +48,7 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/TTS/3081-166546-0000.wav")
         assert os.path.exists("Data/TTS/3081-166546-0089.wav")
 
+    @unittest.skip("Not Implemented")
     def test_spectrogram_tts(self):
         '''Check whethet spectrogram is created for all files in Data/TTS'''
         assert os.path.exists("Data/TTS/3081-166546-0000.wav")
@@ -57,7 +57,7 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/Spectrogram/TTS/3081-166546-0000.wav.jpg")
         assert os.path.exists("Data/Spectrogram/TTS/3081-166546-0089.wav.jpg")
 
-
+    @unittest.skip("Not Implemented")
     def test_spectrogram_humanaudio(self):
         '''Check whethet spectrogram is created for all files in Data/HumanAudio'''
         assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")
