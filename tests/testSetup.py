@@ -20,14 +20,11 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/Spectrogram/TTS")
         assert os.path.exists("Data/Spectrogram/HumanAudio")
 
-    @unittest.skip("Not Implemented")
     def test_transfer(self):
-        '''Check the copying works'''
-
-        #copy the dataset and arrange it as per the template
+        '''Check the copying works and it is as per the template '''
         dataset_location="/media/seeni/Backup/Dataset/Extract/LibriSpeech/dev-clean/3081-largeFile/166546"
         init.transfer_arrange(dataset_location)
-        assert os.path.exists("Data/text/3081-166546.trans.txt")
+        assert os.path.exists("Data/Text/3081-166546.trans.txt")
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac") #first file
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0089.flac") #second file
 
@@ -43,8 +40,8 @@ class TestInit(unittest.TestCase):
     @unittest.skip("Not Implemented")
     def test_make_tts(self):
         '''test the generation of tts wav files'''
-        assert os.path.exists("Data/text/3081-166546.trans.txt")
-        tts.make_tts("Data/text/3081-166546.trans.txt")
+        assert os.path.exists("Data/Text/3081-166546.trans.txt")
+        tts.make_tts("Data/Text/3081-166546.trans.txt")
         assert os.path.exists("Data/TTS/3081-166546-0000.wav")
         assert os.path.exists("Data/TTS/3081-166546-0089.wav")
 
