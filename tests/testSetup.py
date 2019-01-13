@@ -28,12 +28,18 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac") #first file
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0089.flac") #second file
 
+    def test_convert_wav_1(self):
+        '''Convert all the files in HumanAudioFlac/*.flac into HumanAudio/*.wav '''
+        assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac")
+        mediaconvert.convert_1_flac_wav("Data/HumanAudioFlac/3081-166546-0000.flac","Data/HumanAudio/3081-166546-0000.wav")
+        assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")
+
     @unittest.skip("Not Implemented")
     def test_convert_wav_all(self):
         '''Convert all the files in HumanAudioFlac/*.flac into HumanAudio/*.wav '''
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac")
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0089.flac")
-        mediaconvert.convert_all("Data/HumanAudio")
+        mediaconvert.convert_all("Data/HumanAudioFlac")
         assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")
         assert os.path.exists("Data/HumanAudio/3081-166546-0089.wav")
 
