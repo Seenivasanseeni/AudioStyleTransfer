@@ -21,6 +21,6 @@ def convert_all(source_dir):
 
     for file in os.listdir(source_dir):
         source_path=os.path.join(source_dir,file)
-        file.replace("flac","wav")
+        file=file.replace("flac","wav")
         destination_path=os.path.join("Data/HumanAudio",file)
         convert_1_flac_wav(source_path,destination_path)

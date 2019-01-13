@@ -34,7 +34,6 @@ class TestInit(unittest.TestCase):
         mediaconvert.convert_1_flac_wav("Data/HumanAudioFlac/3081-166546-0000.flac","Data/HumanAudio/3081-166546-0000.wav")
         assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")
 
-    @unittest.skip("Not Implemented")
     def test_convert_wav_all(self):
         '''Convert all the files in HumanAudioFlac/*.flac into HumanAudio/*.wav '''
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac")
