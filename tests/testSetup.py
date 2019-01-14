@@ -19,6 +19,7 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/Spectrogram")
         assert os.path.exists("Data/Spectrogram/TTS")
         assert os.path.exists("Data/Spectrogram/HumanAudio")
+        return
 
     def test_transfer(self):
         '''Check the copying works and it is as per the template '''
@@ -75,6 +76,7 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/Spectrogram/TTS/3081-166546-0000.wav.jpg")
         assert os.path.exists("Data/Spectrogram/TTS/3081-166546-0089.wav.jpg")
 
+    @unittest.skip("tested working. Skip due to large processing")
     def test_spectrogram_humanaudio(self):
         '''Check whethet spectrogram is created for all files in Data/HumanAudio'''
         assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")

@@ -9,7 +9,7 @@ def make_tts_1(text,destination_path):
         raise Exception("Text is Empty")
     if (len(destination_path) == 0):
         raise Exception("destination path is an Invalid Path to a media file")
-    subprocess.call(["espeak","-w "+destination_path,text]) #convert the file using espeak subprocess
+    subprocess.call(["espeak","-w "+destination_path,"-g 50",text]) #convert the file using espeak subprocess
     return
 
 def make_tts(file_path):

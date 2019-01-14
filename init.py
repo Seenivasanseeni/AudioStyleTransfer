@@ -57,6 +57,7 @@ def setup():
     print("Setup Starting")
     initialize_dataset_dir()
     transfer_arrange(config.dataset_location)
+    print("Data transfer complete")
     mediaconvert.convert_all("Data/HumanAudioFlac")
     tts.make_tts("Data/Text/3081-166546.trans.txt")
     spectrogram.spectrogram_tts()
