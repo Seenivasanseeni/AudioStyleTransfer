@@ -59,21 +59,22 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/TTS/3081-166546-0000.wav")
         assert os.path.exists("Data/TTS/3081-166546-0089.wav")
 
+    @unittest.skip("tested working. Skip due to large processing")
     def test_spectrogram_1(self):
         '''Check whethet spectrogram is created for A single '''
         assert os.path.exists("Data/TTS/3081-166546-0000.wav")
         spectrogram.spectrogram_1("Data/TTS/3081-166546-0000.wav","Data/Spectrogram/TTS/3081-166546-0000.wav.jpg")
         assert os.path.exists("Data/Spectrogram/TTS/3081-166546-0000.wav.jpg")
 
+    @unittest.skip("tested working. Skip due to large processing")
     def test_spectrogram_tts(self):
-        '''Check whethet spectrogram is created for all files in Data/TTS'''
+        '''Check whether spectrogram is created for all files in Data/TTS'''
         assert os.path.exists("Data/TTS/3081-166546-0000.wav")
         assert os.path.exists("Data/TTS/3081-166546-0089.wav")
         spectrogram.spectrogram_tts()
         assert os.path.exists("Data/Spectrogram/TTS/3081-166546-0000.wav.jpg")
         assert os.path.exists("Data/Spectrogram/TTS/3081-166546-0089.wav.jpg")
 
-    @unittest.skip("Not Implemented")
     def test_spectrogram_humanaudio(self):
         '''Check whethet spectrogram is created for all files in Data/HumanAudio'''
         assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")
