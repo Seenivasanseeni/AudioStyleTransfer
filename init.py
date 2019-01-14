@@ -1,6 +1,7 @@
 import os
 import config
 import shutil
+import mediaconvert,spectrogram,tts
 
 '''The Dataset Directory should be as follows
 
@@ -48,3 +49,19 @@ def transfer_arrange(source_location):
             '''This is a subtitle file .txt'''
             destination_file=os.path.join("Data/Text",file)
         shutil.copy(source_file,destination_file)
+
+    return
+
+def setup():
+    '''Copy, convert, TTS and spectrogram'''
+    print("Setup Starting")
+    initialize_dataset_dir()
+    transfer_arrange(config.dataset_location)
+    mediaconvert.convert_all("Data/HumanAudioFlac")
+    tts.make_tts("Data/Text/3081-166546.trans.txt")
+    spectrogram.spectrogram_tts()
+    spectrogram.spectrogram_human_audio()
+    print("Setup Done")
+
+if __name__ == '__main__':
+    setup()
