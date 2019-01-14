@@ -50,7 +50,6 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/tmp.wav")
         return
 
-    @unittest.skip("Not Implemented")
     def test_make_tts(self):
         '''test the generation of tts wav files'''
         assert os.path.exists("Data/Text/3081-166546.trans.txt")
