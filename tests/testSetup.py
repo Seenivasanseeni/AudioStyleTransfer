@@ -28,12 +28,14 @@ class TestInit(unittest.TestCase):
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac") #first file
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0089.flac") #second file
 
+    @unittest.skip("tested working. Skip due to large processing")
     def test_convert_wav_1(self):
         '''Convert all the files in HumanAudioFlac/*.flac into HumanAudio/*.wav '''
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac")
         mediaconvert.convert_1_flac_wav("Data/HumanAudioFlac/3081-166546-0000.flac","Data/HumanAudio/3081-166546-0000.wav")
         assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")
 
+    @unittest.skip("tested working. Skip due to large processing")
     def test_convert_wav_all(self):
         '''Convert all the files in HumanAudioFlac/*.flac into HumanAudio/*.wav '''
         assert os.path.exists("Data/HumanAudioFlac/3081-166546-0000.flac")
@@ -41,6 +43,12 @@ class TestInit(unittest.TestCase):
         mediaconvert.convert_all("Data/HumanAudioFlac")
         assert os.path.exists("Data/HumanAudio/3081-166546-0000.wav")
         assert os.path.exists("Data/HumanAudio/3081-166546-0089.wav")
+
+    def test_make_tts_1(self):
+        '''test the generation of tts wav for a single text'''
+        tts.make_tts_1("Hi I am Seeni . I dream into the future","Data/tmp.wav")
+        assert os.path.exists("Data/tmp.wav")
+        return
 
     @unittest.skip("Not Implemented")
     def test_make_tts(self):

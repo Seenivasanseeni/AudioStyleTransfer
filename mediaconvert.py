@@ -11,7 +11,7 @@ def convert_1_flac_wav(source_path,destination_path):
     if(destination_path is None or len(destination_path) == 0):
         raise Exception("destination path is an Invalid Path to a media file")
 
-    mediaObject=pydub.AudioSegment.from_file(source_path,"flac") #todo 1: Find the API method to do this
+    mediaObject=pydub.AudioSegment.from_file(source_path,"flac")
     mediaObject.export(destination_path,format="wav")
     return
 
