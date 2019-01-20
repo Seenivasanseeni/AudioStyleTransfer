@@ -7,6 +7,7 @@ def spectrogram_1(source_path,destination_path):
     samplingFrequency, signalData = wavfile.read(source_path)
     plt.specgram(signalData,Fs=samplingFrequency)
     plt.savefig(destination_path)
+    plt.close()
     return
 
 def spectrogram_tts():
