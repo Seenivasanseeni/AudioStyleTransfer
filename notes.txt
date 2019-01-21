@@ -1,0 +1,1 @@
+dimensions of spectrogram is 640*480
