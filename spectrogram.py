@@ -1,10 +1,11 @@
 from scipy.io import wavfile
 import matplotlib.pyplot as plt
 import os
+import librosa
 
 def spectrogram_1(source_path,destination_path):
     '''Read the media file wav file and store its spectrogram in destination_path'''
-    samplingFrequency, signalData = wavfile.read(source_path)
+    signalData, samplingFrequency = librosa.load(source_path,sr=16000)
     plt.specgram(signalData,Fs=samplingFrequency)
     plt.savefig(destination_path)
     plt.close()

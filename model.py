@@ -4,10 +4,26 @@ import torch.functional as F
 
 from torch.autograd.variable import Variable
 from torchvision import transforms, datasets
+import torch.utils.data as data
 import os
 import matplotlib.pyplot as plt
 
 DATA_FOLDER = 'Data/Spectrogram/HumanAudio'
+
+class HumanAudioDataset(data.Dataset):
+    '''Dataset for loading the data form the Spectrogram/HumanAudio'''
+    def __init__(self,train=True,path="Data/Spectrogram/HumanAudio"):
+        self.train=train
+        self.paths=[]
+        for file in os.listdir(path):
+            file_path=os.path.join(path,file)
+            self.paths.append(file_path)
+
+    def __getitem__(self, index):
+        path=self.paths[index]
+        return plt.imread(path)
+    def __len__(self):
+        return len(self.paths)
 
 
 class GeneratorNet(torch.nn.Module):
@@ -39,6 +55,7 @@ class GeneratorNet(torch.nn.Module):
         )
 
     def forward(self, x):
+        x=x.view(-1)
         x = self.hidden0(x)
         x = self.hidden1(x)
         x = self.hidden2(x)
@@ -105,6 +122,8 @@ def fetch_data():
 
 human_audio_data,tts_data=fetch_data()
 
+human_audio_data=torch.tensor(human_audio_data)
+tts_data=torch.tensor(tts_data)
 epoch=3
 
 def train():
@@ -113,7 +132,7 @@ def train():
         g_optimizer.zero_grad()
         generated_data=generator(tts_data)
         discriminator_generator_data = discriminator(generated_data)
-        discriminator_real_data=discriminator(human_audio_data)
+        discriminator_real_data=discriminator(human_audi_data)
         loss_generator= nn.BCELoss() # log(1-discriminator_generator_data) todo
         loss_discriminator = nn.BCELoss() # - log( discriminator_real_data) -log(1-discriminator_generator_data) todo
         loss_generator.backward()
