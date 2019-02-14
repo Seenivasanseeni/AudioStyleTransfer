@@ -11,31 +11,24 @@ class AutoEncoder(nn.Module):
     def __init__(self):
         super(AutoEncoder,self).__init__()
         #images will be of shape (480, 640, 3)
-        self.conv1= nn.Conv2d(3,10,kernel_size=(50,50))
-        self.conv2=nn.Conv2d(10,20,kernel_size=(30,30))
-        self.conv3 = nn.Conv2d(20, 30, kernel_size=(10, 10))
+        self.conv1= nn.Conv2d(3,10,kernel_size=(20,20),stride=5)
+        self.conv2=nn.Conv2d(10,20,kernel_size=(10,10),stride=5)
 
-        self.conv3_t=nn.ConvTranspose2d(30,20,kernel_size=(10,10))
-        self.conv2_t = nn.ConvTranspose2d(20,10, kernel_size=(30,30))
-        self.conv1_t = nn.ConvTranspose2d(10,3,  kernel_size=(50,50))
+        self.conv2_t = nn.ConvTranspose2d(20,10, kernel_size=(10,10),stride=5)
+        self.conv1_t = nn.ConvTranspose2d(10,3,  kernel_size=(20,20),stride=5)
 
-    def forward(self, x):
+    def forward(self, x,debug=False):
         x=TF.to_tensor(x)
         x=x.view([1,3,480,640])
-        print(x.shape)
+        if(debug):
+            print(x.shape)
         x=self.conv1(x)
-        print(x.shape)
-        x=self.conv2(x)
-        print(x.shape)
-        x = self.conv3(x)
-        print(x.shape)
-        x = self.conv3_t(x)
-        print(x.shape)
-        x = self.conv2_t(x)
-        print(x.shape)
+        if (debug):
+            print(x.shape)
         x = self.conv1_t(x)
-        print(x.shape)
-        return x
+        if (debug):
+            print(x.shape)
+        return x.view([480,640,3])
 
 def get_input_pair():
     for file in os.listdir("Data/Spectrogram/HumanAudio/"):
@@ -47,18 +40,18 @@ def get_input_pair():
 
 
 model=AutoEncoder()
-optimizer = optim.Adam(params=model.parameters(),lr=0.01)
-
+optimizer = optim.Adam(params=model.parameters(),lr=0.5)
+pairwiseDistance=distance.PairwiseDistance(p=2)
 def train(epoch=10):
     for e in range(epoch):
         for index,(human_audio,tts_audio) in enumerate(get_input_pair()):
             model.zero_grad()
             generated_audio = model(tts_audio)
-            reconstruction_loss_euclidean=distance.PairwiseDistance(generated_audio,human_audio)
-            loss= torch.mean(torch.pow(reconstruction_loss_euclidean,2))
+            reconstruction_loss_euclidean=pairwiseDistance(torch.Tensor(generated_audio),torch.Tensor(human_audio))
+            loss=torch.mean(torch.pow(reconstruction_loss_euclidean,2))
             loss.backward()
             optimizer.step()
-            input()
+        print(loss.data)
 
 if __name__ == '__main__':
     train()
