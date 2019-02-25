@@ -50,7 +50,7 @@ class CustomDataset():
         #wavfile.write("t.wav", rate=16000, data=t)
         h_f, h_t, h_z = stft(h)
         t_f, t_t, t_z = stft(t)
-        return h_z,t_z
+        return np.real(h_z),np.real(t_z)
 
 
 def test():
