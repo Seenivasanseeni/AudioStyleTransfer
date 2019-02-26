@@ -2,9 +2,10 @@ import os
 import librosa
 import pdb
 import numpy as np
-from scipy.signal import stft
+from librosa import stft
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
+import random
 
 maxlength = 0
 
@@ -32,8 +33,11 @@ class CustomDataset():
     Custom dataset class for fetching pair at at time
     '''
 
-    def __init__(self):
+    def __init__(self,test=False):
         self.list = os.listdir("Data/HumanAudio")
+        self.test = test
+        if(test):
+            random.shuffle(self.list)
     def __getitem__(self, ind):
         '''
         Get the data read the file and send it as a fourier transform matrix
@@ -48,9 +52,9 @@ class CustomDataset():
         h,t= make_fixed_audio_size(human_audio[0],tts[0])
         #wavfile.write("h.wav", rate=16000, data=h)
         #wavfile.write("t.wav", rate=16000, data=t)
-        h_f, h_t, h_z = stft(h)
-        t_f, t_t, t_z = stft(t)
-        return np.real(h_z),np.real(t_z)
+        h_mag,h_phase = librosa.magphase(stft(h)) #split the magnitude and phase from fourier matrix
+        t_mag,t_phase = librosa.magphase(stft(t))
+        return h_mag,t_mag
 
 
 def test():
