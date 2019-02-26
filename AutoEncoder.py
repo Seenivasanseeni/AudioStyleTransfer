@@ -19,7 +19,8 @@ class AutoEncoder(nn.Module):
         xshape = list(x.shape)
         inputshape = [1,1]
         inputshape.extend(xshape)
-        print("Reshaping to ",inputshape)
+        if(debug):
+            print("Reshaping to ",inputshape)
         x= torch.from_numpy(x).float()
         x=x.view(inputshape) # find shape
 
@@ -45,13 +46,14 @@ def get_input_pair():
 model=AutoEncoder()
 optimizer = optim.Adam(params=model.parameters(),lr=0.5)
 pairwiseDistance=distance.PairwiseDistance(p=2)
-def train(epoch=10):
+def train(epoch=10,debug=False):
     for e in range(epoch):
         data = datadriver.CustomDataset()
         for index,(human_audio,tts_audio) in enumerate(data):
-            print("Inputs are of shape",human_audio.shape,tts_audio.shape)
+            if(debug):
+                print("Inputs are of shape",human_audio.shape,tts_audio.shape)
             model.zero_grad()
-            generated_audio = model(tts_audio)
+            generated_audio = model(tts_audio,debug=debug)
             reconstruction_loss_euclidean=pairwiseDistance(torch.Tensor(generated_audio),torch.Tensor(human_audio))
             loss=torch.mean(torch.pow(reconstruction_loss_euclidean,2))
             loss.backward()
@@ -59,4 +61,4 @@ def train(epoch=10):
         print(loss.data)
 
 if __name__ == '__main__':
-    train()
+    train(debug=False)
