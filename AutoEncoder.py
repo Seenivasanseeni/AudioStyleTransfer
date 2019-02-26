@@ -6,20 +6,23 @@ import matplotlib.pyplot as plt
 import  torch
 import torch.optim as optim
 import torch.nn.modules.distance as distance
+import datadriver
 
 class AutoEncoder(nn.Module):
     def __init__(self):
         super(AutoEncoder,self).__init__()
         #images will be of shape (480, 640, 3)
-        self.conv1= nn.Conv2d(3,10,kernel_size=(20,20),stride=5)
-        self.conv2=nn.Conv2d(10,20,kernel_size=(10,10),stride=5)
-
-        self.conv2_t = nn.ConvTranspose2d(20,10, kernel_size=(10,10),stride=5)
-        self.conv1_t = nn.ConvTranspose2d(10,3,  kernel_size=(20,20),stride=5)
+        self.conv1= nn.Conv2d(1,3,kernel_size=(20,20))
+        self.conv1_t = nn.ConvTranspose2d(3,1,  kernel_size=(20,20))
 
     def forward(self, x,debug=False):
-        x=TF.to_tensor(x)
-        x=x.view([1,3,480,640])
+        xshape = list(x.shape)
+        inputshape = [1,1]
+        inputshape.extend(xshape)
+        print("Reshaping to ",inputshape)
+        x= torch.from_numpy(x).float()
+        x=x.view(inputshape) # find shape
+
         if(debug):
             print(x.shape)
         x=self.conv1(x)
@@ -28,7 +31,7 @@ class AutoEncoder(nn.Module):
         x = self.conv1_t(x)
         if (debug):
             print(x.shape)
-        return x.view([480,640,3])
+        return x.view(xshape)
 
 def get_input_pair():
     for file in os.listdir("Data/Spectrogram/HumanAudio/"):
@@ -44,7 +47,9 @@ optimizer = optim.Adam(params=model.parameters(),lr=0.5)
 pairwiseDistance=distance.PairwiseDistance(p=2)
 def train(epoch=10):
     for e in range(epoch):
-        for index,(human_audio,tts_audio) in enumerate(get_input_pair()):
+        data = datadriver.CustomDataset()
+        for index,(human_audio,tts_audio) in enumerate(data):
+            print("Inputs are of shape",human_audio.shape,tts_audio.shape)
             model.zero_grad()
             generated_audio = model(tts_audio)
             reconstruction_loss_euclidean=pairwiseDistance(torch.Tensor(generated_audio),torch.Tensor(human_audio))
