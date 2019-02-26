@@ -38,6 +38,7 @@ class CustomDataset():
         self.test = test
         if(test):
             random.shuffle(self.list)
+
     def __getitem__(self, ind):
         '''
         Get the data read the file and send it as a fourier transform matrix
