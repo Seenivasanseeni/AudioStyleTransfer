@@ -7,6 +7,9 @@ import  torch
 import torch.optim as optim
 import torch.nn.modules.distance as distance
 import datadriver
+import pdb
+import librosa
+from scipy.io import wavfile
 
 class AutoEncoder(nn.Module):
     def __init__(self):
@@ -34,6 +37,15 @@ class AutoEncoder(nn.Module):
             print(x.shape)
         return x.view(xshape)
 
+def to_numpy(t):
+    '''
+    convert the tensor t into numpy
+    :param t: tensor
+    :return:
+    '''
+    return torch.Tensor.numpy(t.data)
+
+
 def get_input_pair():
     for file in os.listdir("Data/Spectrogram/HumanAudio/"):
         human_audio_path = "Data/Spectrogram/HumanAudio/" + file
@@ -42,11 +54,17 @@ def get_input_pair():
         tts_audio_data=plt.imread(tts_audio_path)
         yield  human_audio_data,tts_audio_data
 
+model,optimizer,pairwiseDistance=None,None,None
 
-model=AutoEncoder()
-optimizer = optim.Adam(params=model.parameters(),lr=0.5)
-pairwiseDistance=distance.PairwiseDistance(p=2)
+def setupModel():
+    model=AutoEncoder()
+    optimizer = optim.Adam(params=model.parameters(),lr=0.5)
+    pairwiseDistance=distance.PairwiseDistance(p=2)
+    return model,optimizer,pairwiseDistance
+
+
 def train(epoch=10,debug=False):
+    lossData=[]
     for e in range(epoch):
         data = datadriver.CustomDataset()
         for index,(human_audio,tts_audio) in enumerate(data):
@@ -58,7 +76,38 @@ def train(epoch=10,debug=False):
             loss=torch.mean(torch.pow(reconstruction_loss_euclidean,2))
             loss.backward()
             optimizer.step()
-        print(loss.data)
+            lossData.append(loss.data.numpy())
+        print("Epoch e:{} Loss:{}".format(e,loss.data))
+        plt.plot([i for i in range(len(lossData))], lossData)
+        lossData=[]
+    plt.savefig("lossGraph.jpg")
+    plt.show()
+
+def convert_to_wav(Zxx):
+    '''
+    given a fourier matrix , find the inverse matrix to find the source
+    :param Zxx:
+    :return:
+    '''
+    #todo not working all the audio params are not in sync
+    wav = librosa.istft(Zxx)
+    wavfile.write("out.wav",16000,wav)
+    return
+
+def test(debug=False):
+    data = datadriver.CustomDataset(test=True)
+    generated_audio_=None
+    tts_audio_ = None
+    for index,(human_audio,tts_audio) in enumerate(data):
+        convert_to_wav(human_audio)
+        generated_audio = model(tts_audio, debug=debug)
+        generated_audio_,tts_audio_ = to_numpy(generated_audio),tts_audio
+        break;
+    '''plot the figures on matplotlib'''
+
+    return
 
 if __name__ == '__main__':
-    train(debug=False)
+    model, optimizer, pairwiseDistance = setupModel()
+    train(epoch=10)
+    test(debug=False)
