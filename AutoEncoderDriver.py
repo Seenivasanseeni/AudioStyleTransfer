@@ -30,7 +30,7 @@ def get_input_pair():
         tts_audio_data=plt.imread(tts_audio_path)
         yield  human_audio_data,tts_audio_data
 
-def train(model,optimizer,loss,epoch=10,debug=False):
+def train(model,optimizer,loss,args,epoch=10,debug=False):
     lossData=[]
     for e in range(epoch):
         data = datadriver.CustomDataset()
@@ -50,7 +50,7 @@ def train(model,optimizer,loss,epoch=10,debug=False):
         total_loss=0 #reset total loss
         plt.plot([i for i in range(len(lossData))], lossData)
         lossData=[] #reset lossData for the next epoch
-    plt.savefig("lossGraph.jpg")
+    plt.savefig("Graphs/lossGraph"+args.model+".jpg")
     plt.show()
 
 def convert_to_wav(Zxx):
@@ -100,5 +100,5 @@ if __name__ == '__main__':
     args = argParse.parse_args()
     # load the model
     model,optimizer,loss=load_model(args)
-    train(model,optimizer,loss,epoch=10)
+    train(model,optimizer,loss,args,epoch=10)
     test(model,debug=False)

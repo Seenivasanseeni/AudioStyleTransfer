@@ -14,9 +14,10 @@ from scipy.io import wavfile
 class AutoEncoder(nn.Module):
     def __init__(self):
         super(AutoEncoder,self).__init__()
-        #images will be of shape (480, 640, 3)
-        self.conv1= nn.Conv2d(1,3,kernel_size=(20,20))
-        self.conv1_t = nn.ConvTranspose2d(3,1,  kernel_size=(20,20))
+        self.conv1 = nn.Conv2d(1, 3, kernel_size=(2,2))
+        self.conv2 = nn.Conv2d(3, 4, kernel_size=(2, 2),stride=2)
+        self.conv2_t = nn.ConvTranspose2d(4,3,kernel_size=(2,2),stride=2)
+        self.conv1_t = nn.ConvTranspose2d(3,1,  kernel_size=(2,2))
 
     def forward(self, x,debug=False):
         xshape = list(x.shape)
@@ -25,13 +26,21 @@ class AutoEncoder(nn.Module):
         if(debug):
             print("Reshaping to ",inputshape)
         x= torch.from_numpy(x).float()
-        x=x.view(inputshape) # find shape
+        x=x.view(inputshape)
 
         if(debug):
             print(x.shape)
-        x=self.conv1(x)
+        x = self.conv1(x)
         if (debug):
             print(x.shape)
+        x = self.conv2(x)
+        if (debug):
+            print(x.shape)
+
+        x = self.conv2_t(x)
+        if (debug):
+            print(x.shape)
+
         x = self.conv1_t(x)
         if (debug):
             print(x.shape)
