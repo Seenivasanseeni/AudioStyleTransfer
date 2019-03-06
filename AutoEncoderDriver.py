@@ -39,9 +39,13 @@ def plot_learning_speed_graph(lossData,args):
     :param lossData: aggreated sum of losses, in which each loss is for one whole epoch
     :return:
     '''
+    if(len(lossData)==0):
+        return
     speedData=[]
-    previousLoss=0
-    for l in lossData:
+    previousLoss=lossData[0]
+    for l in lossData[1:]:
+        if(l==0):
+            continue
         speedData.append((previousLoss-l)/previousLoss*100)
         previousLoss=l
     plt.plot([i for i in range(len(speedData))],speedData,color="red")
@@ -52,9 +56,9 @@ def train(model,optimizer,loss,args,epoch=10,debug=False):
     '''
         This function trains the model based on the passed parameters
     :param model: nn.Module
-    :param optimizer: which optimzers the weights of @model
+    :param optimizer: which optimizers the weights of @model
     :param loss: loss function based on which model's output is compared with its input
-    :param args: system command line arguements parsed by argparse.ArgumentParser
+    :param args: system command line arguments parsed by argparse.ArgumentParser
     :param epoch: number of times the model has to be retrained on the model
     :param debug: If True, it periodically print debugging information
     :return: plotted graphs in Graphs/ directory
@@ -82,7 +86,7 @@ def train(model,optimizer,loss,args,epoch=10,debug=False):
         lossData=[] #reset lossData for the next epoch
     plt.savefig("Graphs/lossGraph"+args.model+"-"+args.name+".jpg")
     plt.show()
-    plot_learning_speed_graph(lossData,args)
+    plot_learning_speed_graph(total_lossData,args)
     return
 
 def reconstruct_wav(Zxx,name):
@@ -113,7 +117,6 @@ def test(model,debug=False):
         reconstruct_wav(tts_audio, name="tts.wav")
         reconstruct_wav(human_audio, name="human.wav")
         break;
-
     '''plot the figures on matplotlib'''
     return
 
@@ -124,14 +127,13 @@ def load_model(args):
     :param args:
     :return:
     '''
-    if(args.model=="basic"):
+    if (args.model == "basic"):
+        import BasicAutoEncoder
+        return BasicAutoEncoder.setupModel()
+    if (args.model == "mod"):
         import AutoEncoder
         return AutoEncoder.setupModel()
     raise Exception("Model:{} not specified or doesn't exist".format(args.model))
-
-
-
-
 
 
 if __name__ == '__main__':
