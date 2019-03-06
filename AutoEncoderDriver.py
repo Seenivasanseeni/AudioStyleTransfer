@@ -33,7 +33,32 @@ def get_input_pair():
         tts_audio_data=plt.imread(tts_audio_path)
         yield  human_audio_data,tts_audio_data
 
+def plot_learning_speed_graph(lossData,args):
+    '''
+    This algorithm plots the speed in which loss is progressing
+    :param lossData: aggreated sum of losses, in which each loss is for one whole epoch
+    :return:
+    '''
+    speedData=[]
+    previousLoss=0
+    for l in lossData:
+        speedData.append((previousLoss-l)/previousLoss*100)
+        previousLoss=l
+    plt.plot([i for i in range(len(speedData))],speedData,color="red")
+    plt.savefig("Graphs/speedGraph-"+args.model+"-"+args.name+".jpg")
+    plt.show()
+
 def train(model,optimizer,loss,args,epoch=10,debug=False):
+    '''
+        This function trains the model based on the passed parameters
+    :param model: nn.Module
+    :param optimizer: which optimzers the weights of @model
+    :param loss: loss function based on which model's output is compared with its input
+    :param args: system command line arguements parsed by argparse.ArgumentParser
+    :param epoch: number of times the model has to be retrained on the model
+    :param debug: If True, it periodically print debugging information
+    :return: plotted graphs in Graphs/ directory
+    '''
     lossData=[]
     total_lossData=[]
     for e in range(epoch):
@@ -55,9 +80,10 @@ def train(model,optimizer,loss,args,epoch=10,debug=False):
         total_lossData.append(total_loss)
         plt.plot([i for i in range(len(lossData))], lossData)
         lossData=[] #reset lossData for the next epoch
-    plt.plot([i for i in range(len(total_lossData))],total_lossData,color="red")
     plt.savefig("Graphs/lossGraph"+args.model+"-"+args.name+".jpg")
     plt.show()
+    plot_learning_speed_graph(lossData,args)
+    return
 
 def reconstruct_wav(Zxx,name):
     '''
@@ -115,5 +141,5 @@ if __name__ == '__main__':
     args = argParse.parse_args()
     # load the model
     model,optimizer,loss=load_model(args)
-    #train(model,optimizer,loss,args,epoch=3)
+    train(model,optimizer,loss,args,epoch=30)
     test(model,debug=False)
