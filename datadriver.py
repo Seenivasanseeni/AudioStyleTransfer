@@ -6,7 +6,7 @@ from librosa import stft
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
 import random
-
+from config import size
 maxlength = 0
 
 
@@ -17,8 +17,7 @@ def make_fixed_audio_size(a,b):
     :param b: numpy array
     :return:
     '''
-    global maxlength
-    size = 280000
+    global maxlength,size
     maxlength = max(maxlength,size) # 279344 is the maximum number of samples in this dataset
     na = list(a)
     nb = list(b)
@@ -50,9 +49,9 @@ class CustomDataset():
         tts_path = "Data/TTS/" + file
         human_audio = librosa.load(human_audio_path,sr = 16000)
         tts = librosa.load(tts_path,sr = 16000)
-        h,t= make_fixed_audio_size(human_audio[0],tts[0])
-        #wavfile.write("h.wav", rate=16000, data=h)
-        #wavfile.write("t.wav", rate=16000, data=t)
+        h,t= make_fixed_audio_size(human_audio[0],tts[0]) #tested it didnt scramble the audio
+        wavfile.write("h.wav", rate=16000, data=h)
+        wavfile.write("t.wav", rate=16000, data=t)
         h_mag,h_phase = librosa.magphase(stft(h)) #split the magnitude and phase from fourier matrix
         t_mag,t_phase = librosa.magphase(stft(t))
         return h_mag,t_mag

@@ -12,6 +12,9 @@ import datadriver
 import pdb
 import librosa
 from scipy.io import wavfile
+import random
+from config import size
+import numpy as np
 
 def to_numpy(t):
     '''
@@ -32,6 +35,7 @@ def get_input_pair():
 
 def train(model,optimizer,loss,args,epoch=10,debug=False):
     lossData=[]
+    total_lossData=[]
     for e in range(epoch):
         data = datadriver.CustomDataset()
         total_loss=0
@@ -48,20 +52,28 @@ def train(model,optimizer,loss,args,epoch=10,debug=False):
             total_loss+=reconstruction_loss.data
         print("Epoch e:{} Loss:{}".format(e,total_loss))
         total_loss=0 #reset total loss
+        total_lossData.append(total_loss)
         plt.plot([i for i in range(len(lossData))], lossData)
         lossData=[] #reset lossData for the next epoch
-    plt.savefig("Graphs/lossGraph"+args.model+".jpg")
+    plt.plot([i for i in range(len(total_lossData))],total_lossData,color="red")
+    plt.savefig("Graphs/lossGraph"+args.model+"-"+args.name+".jpg")
     plt.show()
 
-def convert_to_wav(Zxx):
+def reconstruct_wav(Zxx,name):
     '''
     given a fourier matrix , find the inverse matrix to find the source
     :param Zxx:
     :return:
     '''
-    #todo not working all the audio params are not in sync
-    wav = librosa.istft(Zxx)
-    wavfile.write("out.wav",16000,wav)
+    global size
+    xn=np.random.rand(size)
+    no_iterations=200
+    for i in range(no_iterations):
+        stft_xn=librosa.stft(xn)
+        angle_xn = np.angle(stft_xn)
+        xn=librosa.istft(Zxx*np.exp(1j*angle_xn))
+
+    wavfile.write(name,16000,xn)
     return
 
 def test(model,debug=False):
@@ -69,12 +81,14 @@ def test(model,debug=False):
     generated_audio_=None
     tts_audio_ = None
     for index,(human_audio,tts_audio) in enumerate(data):
-        convert_to_wav(human_audio)
         generated_audio = model(tts_audio, debug=debug)
-        generated_audio_,tts_audio_ = to_numpy(generated_audio),tts_audio
+        generated_audio = to_numpy(generated_audio)
+        reconstruct_wav(generated_audio, name="gen.wav")
+        reconstruct_wav(tts_audio, name="tts.wav")
+        reconstruct_wav(human_audio, name="human.wav")
         break;
-    '''plot the figures on matplotlib'''
 
+    '''plot the figures on matplotlib'''
     return
 
 
@@ -87,7 +101,7 @@ def load_model(args):
     if(args.model=="basic"):
         import AutoEncoder
         return AutoEncoder.setupModel()
-    raise Exception("ModelL:{} not specified or doesn't exist".format(args.model))
+    raise Exception("Model:{} not specified or doesn't exist".format(args.model))
 
 
 
@@ -97,8 +111,9 @@ def load_model(args):
 if __name__ == '__main__':
     argParse = argparse.ArgumentParser()
     argParse.add_argument("--model", type=str, nargs="?")
+    argParse.add_argument("--name", type=str, nargs="?")
     args = argParse.parse_args()
     # load the model
     model,optimizer,loss=load_model(args)
-    train(model,optimizer,loss,args,epoch=10)
+    #train(model,optimizer,loss,args,epoch=3)
     test(model,debug=False)
