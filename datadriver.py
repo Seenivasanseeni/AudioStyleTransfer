@@ -33,6 +33,9 @@ class CustomDataset():
     '''
 
     def __init__(self,test=False):
+        '''
+        Initializes the dataset for use.
+        '''
         self.list = os.listdir("Data/HumanAudio")
         self.test = test
         if(test):
@@ -58,11 +61,19 @@ class CustomDataset():
 
 
 def test():
+    '''
+    Tests the data driver for its functionality over a single iteration and prints the shape of outputs.
+    :return:
+    '''
     c = CustomDataset()
     for i,(h_z,t_z) in enumerate(c):
         print(i,h_z.shape,t_z.shape)
 
 def testVariousIterations():
+    '''
+    Tests the data driver for many iterations to ensure that shape is same irrespective of time. i.e it is deterministic in nature.
+    :return:
+    '''
     for j in range(10):
         for i,(h_z,t_z) in enumerate(CustomDataset()):
             if i==0:
