@@ -13,7 +13,13 @@ from scipy.io import wavfile
 import random
 
 class AutoEncoder(nn.Module):
+    '''
+    a convolutional Autoencoder class
+    '''
     def __init__(self):
+        '''
+        Initializes the autoencoder. Initializes layers of encoders and decoders.
+        '''
         super(AutoEncoder,self).__init__()
         self.conv1 = nn.Conv2d(1, 3, kernel_size=(8,8))
         self.conv2 = nn.Conv2d(3, 5, kernel_size=(2, 2),stride=2)
@@ -21,6 +27,12 @@ class AutoEncoder(nn.Module):
         self.conv1_t = nn.ConvTranspose2d(3,1,  kernel_size=(8,8))
 
     def forward(self, x,debug=False):
+        '''
+        gets the input and pass it along different convolutional encoders and decoders and returns the tensor result.
+        :param x:
+        :param debug:
+        :return:
+        '''
         xshape = list(x.shape)
         inputshape = [1,1]
         inputshape.extend(xshape)
@@ -50,6 +62,10 @@ class AutoEncoder(nn.Module):
 model,optimizer,pairwiseDistance=None,None,None
 
 def setupModel():
+    '''
+    This method will be called by the driver to setup a model,optimizer, loss functions which can be used to train the model
+    :return:
+    '''
     model=AutoEncoder()
     optimizer = optim.Adam(params=model.parameters(),lr=0.5)
     pairwiseDistance=distance.PairwiseDistance(p=2)
