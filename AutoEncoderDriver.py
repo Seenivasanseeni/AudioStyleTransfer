@@ -25,14 +25,6 @@ def to_numpy(t):
     return torch.Tensor.numpy(t.data)
 
 
-def get_input_pair():
-    for file in os.listdir("Data/Spectrogram/HumanAudio/"):
-        human_audio_path = "Data/Spectrogram/HumanAudio/" + file
-        tts_audio_path = "Data/Spectrogram/TTS/" + file
-        human_audio_data=plt.imread(human_audio_path)
-        tts_audio_data=plt.imread(tts_audio_path)
-        yield  human_audio_data,tts_audio_data
-
 def plot_learning_speed_graph(lossData,args):
     '''
     This algorithm plots the speed in which loss is progressing
@@ -107,6 +99,12 @@ def reconstruct_wav(Zxx,name):
     return
 
 def test(model,debug=False):
+    '''
+    tests the passed model and writes the files 1.gen.wav 2.human.wav 3.tts.wav
+    :param model: a trained model
+    :param debug: if True, prints debugging information.
+    :return:
+    '''
     data = datadriver.CustomDataset(test=True)
     generated_audio_=None
     tts_audio_ = None
@@ -140,7 +138,7 @@ if __name__ == '__main__':
     argParse = argparse.ArgumentParser()
     argParse.add_argument("--model", type=str, nargs="?")
     argParse.add_argument("--name", type=str, nargs="?")
-    args = argParse.parse_args()
+    args = argParse.parse_args() #parsing the arguments
     # load the model
     model,optimizer,loss=load_model(args)
     train(model,optimizer,loss,args,epoch=50)
