@@ -143,5 +143,5 @@ if __name__ == '__main__':
     args = argParse.parse_args()
     # load the model
     model,optimizer,loss=load_model(args)
-    train(model,optimizer,loss,args,epoch=30)
+    train(model,optimizer,loss,args,epoch=50)
     test(model,debug=False)

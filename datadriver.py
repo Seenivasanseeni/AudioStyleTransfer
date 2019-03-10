@@ -62,6 +62,12 @@ def test():
     for i,(h_z,t_z) in enumerate(c):
         print(i,h_z.shape,t_z.shape)
 
+def testVariousIterations():
+    for j in range(10):
+        for i,(h_z,t_z) in enumerate(CustomDataset()):
+            if i==0:
+                print(j,h_z.shape,t_z.shape)
+
 
 if __name__ == '__main__':
-    test()
+    testVariousIterations()
