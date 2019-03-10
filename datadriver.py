@@ -42,7 +42,7 @@ class CustomDataset():
         '''
         Get the data read the file and send it as a fourier transform matrix
         :param ind: item no
-        :return:
+        :return: two fourier matrices of size 1025*547
         '''
         file = self.list[ind]
         human_audio_path = "Data/HumanAudio/" + file
