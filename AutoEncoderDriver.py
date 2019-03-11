@@ -72,7 +72,6 @@ def train(model,optimizer,loss,args,epoch=10,debug=False):
             lossData.append(reconstruction_loss.data.numpy())
             total_loss+=reconstruction_loss.data
         print("Epoch e:{} Loss:{}".format(e,total_loss))
-        total_loss=0 #reset total loss
         total_lossData.append(total_loss)
         plt.plot([i for i in range(len(lossData))], lossData)
         lossData=[] #reset lossData for the next epoch
@@ -141,5 +140,5 @@ if __name__ == '__main__':
     args = argParse.parse_args() #parsing the arguments
     # load the model
     model,optimizer,loss=load_model(args)
-    train(model,optimizer,loss,args,epoch=50)
+    train(model,optimizer,loss,args,epoch=20)
     test(model,debug=False)
