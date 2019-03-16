@@ -137,8 +137,9 @@ if __name__ == '__main__':
     argParse = argparse.ArgumentParser()
     argParse.add_argument("--model", type=str, nargs="?")
     argParse.add_argument("--name", type=str, nargs="?")
+    argParse.add_argument("--epoch", type=int, nargs="?",default=10)
     args = argParse.parse_args() #parsing the arguments
     # load the model
     model,optimizer,loss=load_model(args)
-    train(model,optimizer,loss,args,epoch=20)
+    train(model,optimizer,loss,args,epoch=args.epoch)
     test(model,debug=False)
