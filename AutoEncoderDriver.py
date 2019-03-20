@@ -44,7 +44,7 @@ def plot_learning_speed_graph(lossData,args):
     plt.savefig("Graphs/speedGraph-"+args.model+"-"+args.name+".jpg")
     plt.show()
 
-def train(model,optimizer,loss,args,epoch=10,debug=False):
+def train(model,optimizer,loss,args,epoch=10,debug=False,onlyHuman=False):
     '''
         This function trains the model based on the passed parameters
     :param model: nn.Module
@@ -61,6 +61,8 @@ def train(model,optimizer,loss,args,epoch=10,debug=False):
         data = datadriver.CustomDataset()
         total_loss=0
         for index,(human_audio,tts_audio) in enumerate(data):
+            if onlyHuman:
+                tts_audio = human_audio
             if(debug):
                 print("Inputs are of shape",human_audio.shape,tts_audio.shape)
             model.zero_grad()
@@ -89,10 +91,13 @@ def reconstruct_wav(Zxx,name):
     global size
     xn=np.random.rand(size)
     no_iterations=200
+    if(name=="gen.wav"):
+        no_iterations = 10
     for i in range(no_iterations):
         stft_xn=librosa.stft(xn)
         angle_xn = np.angle(stft_xn)
         xn=librosa.istft(Zxx*np.exp(1j*angle_xn))
+
 
     wavfile.write(name,16000,xn)
     return
@@ -110,7 +115,7 @@ def test(model,debug=False):
     for index,(human_audio,tts_audio) in enumerate(data):
         generated_audio = model(tts_audio, debug=debug)
         generated_audio = to_numpy(generated_audio)
-        reconstruct_wav(generated_audio, name="gen.wav")
+        reconstruct_wav(human_audio, name="gen.wav")
         reconstruct_wav(tts_audio, name="tts.wav")
         reconstruct_wav(human_audio, name="human.wav")
         break;
@@ -141,5 +146,8 @@ if __name__ == '__main__':
     args = argParse.parse_args() #parsing the arguments
     # load the model
     model,optimizer,loss=load_model(args)
-    train(model,optimizer,loss,args,epoch=args.epoch)
+    train(model, optimizer, loss, args, epoch=args.epoch, onlyHuman=True)
+    print("Training with TTS")
+    train(model, optimizer, loss, args, epoch=args.epoch, onlyHuman=False)
+
     test(model,debug=False)
